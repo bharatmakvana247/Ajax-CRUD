@@ -117,6 +117,7 @@
         }
 
         function editFunc(id) {
+            console.log("id : ", id);
             $.ajax({
                 type: "POST",
                 url: "{{ url('edit-product') }}",
@@ -137,6 +138,7 @@
         function deleteFunc(id) {
             if (confirm("Delete record?") == true) {
                 var id = id;
+                console.log("id : ", id);
                 // ajax
                 $.ajax({
                     type: "POST",
@@ -146,6 +148,7 @@
                     },
                     dataType: 'json',
                     success: function(res) {
+                        console.log("rs:", res);
                         var oTable = $('#products').dataTable();
                         oTable.fnDraw(false);
                     }

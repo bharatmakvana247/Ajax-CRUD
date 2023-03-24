@@ -124,7 +124,6 @@
         $('#categoryForm').submit(function(e) {
             e.preventDefault();
             var formData = new FormData(this);
-            console.log("fromData :", formData);
             $.ajax({
                 type: 'POST',
                 url: "{{ route('category.store') }}",
@@ -143,6 +142,54 @@
                     alert("error")
                     console.log("err :", err);
                 }
+            });
+        });
+
+        //Edit Records
+        $(document).ready(function() {
+            $(document).on("click", "a.editCategory", function(e) {
+                var id = $(this).attr('id');
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('category.edit') }}",
+                    data: {
+                        id: id
+                    },
+                    dataType: 'json',
+                    success: function(res) {
+                        $('#categoryModal').html("Edit product");
+                        $('#category-modal').modal('show');
+                        $('#id').val(res.id);
+                        $('#category_name').val(res.category_name);
+                        $('#category_details').val(res.category_details);
+                    },
+                    error: function(err) {
+                        console.log("err :", err);
+                    }
+                });
+            });
+        });
+
+        //Delete Records
+        $(document).ready(function() {
+            $(document).on("click", "a.deleteCategory", function(e) {
+                var dId = $(this).attr('id');
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ route('category.delete') }}",
+                    data: {
+                        id: dId
+                    },
+                    dataType: 'json',
+                    success: (data) => {
+                        var oTable = $('#categoriesID').dataTable();
+                        oTable.fnDraw(false);
+                    },
+                    error: function(err) {
+                        console.log("err :", err);
+                    }
+                });
+
             });
         });
     </script>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Http\Client\Request as ClientRequest;
 use Illuminate\Http\Request;
 
@@ -13,12 +14,11 @@ class CategoryController extends Controller
     {
         if (request()->ajax()) {
             return datatables()->of(Category::select('id', 'category_name', 'category_details'))
+
                 ->addColumn('action', function (Category $category) {
                     $action  = '';
-                    // <a type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modal-block-normal"><i
-                    // class="fa fa-fw fa-plus me-1"></i>Add Product</a>
-                    $action .= '<a href="javascript:void(0)" class="btn btn-primary btn-circle btn-sm editProduct" onClick="editCatFunc({{ $category->id }})" data-toggle="tooltip" title="Show">Edit</a>';
-                    $action .= '<a class="btn btn-danger btn-circle btn-sm m-l-10 ml-1 mr-1" data-toggle="tooltip" onClick="deleteCatFunc({{ $category->id }})" title="Delete">Delete</a>';
+                    $action .= '<a href="javascript:void(0)" id="' . $category->id . '" class="btn btn-primary mr-2 editCategory" >Edit</a>';
+                    $action .= '<a href="javascript:void(0)" id="' . $category->id . '" data-id="' . $category->id . '" class="btn btn-danger mr-2 deleteCategory" >Delete</a>';
                     return $action;
                 })
                 ->rawColumns(['action'])
@@ -48,5 +48,18 @@ class CategoryController extends Controller
         );
 
         return Response()->json($category);
+    }
+
+    public function edit(Request $request)
+    {
+        $category_id = Category::where('id', $request->id)->first();
+        return Response()->json($category_id);
+    }
+
+    public function delete(Request $request)
+    {
+        $category_dltId = Category::where('id', $request->id)->first();
+        $category_dltId->delete();
+        return Response()->json($category_dltId);
     }
 }
